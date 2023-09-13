@@ -21,10 +21,18 @@ endif()
 # Setup Geant4 include directories and compile definitions
 # Setup include directory for this project
 #
+list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
+find_package(ROOT REQUIRED COMPONENTS RIO Net)
+include(${ROOT_USE_FILE})
+include_directories(${ROOT_INCLUDE_DIR})
+
 include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/include/Action)
 include_directories(${PROJECT_SOURCE_DIR}/include/Physics)
+include_directories(${PROJECT_SOURCE_DIR}/include/Log)
+include_directories(${PROJECT_SOURCE_DIR}/include/Storage)
+include_directories(${PROJECT_SOURCE_DIR}/include/Detector)
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
@@ -38,7 +46,7 @@ file(GLOB_RECURSE headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #
 add_executable(PlayG4 PlayG4.cc ${sources} ${headers})
 target_link_libraries(PlayG4 ${Geant4_LIBRARIES})
-
+target_link_libraries(PlayG4 ${ROOT_LIBRARIES})
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
 # build B2b. This is so that we can run the executable directly because it

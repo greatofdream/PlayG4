@@ -31,6 +31,7 @@
 #include "PlayG4PrimaryGeneratorAction.hh"
 #include "PlayG4RunAction.hh"
 #include "PlayG4EventAction.hh"
+// #include "PlayG4TrackingAction.hh"
 #include "PlayG4SteppingAction.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -56,8 +57,9 @@ void PlayG4ActionInitialization::Build() const
 {
   SetUserAction(new PlayG4PrimaryGeneratorAction);
   SetUserAction(new PlayG4RunAction);
-  auto eventAction = new PlayG4EventAction;
+  auto eventAction = new PlayG4EventAction();
   SetUserAction(eventAction);
+  // SetUserAction(new PlayG4TrackingAction());
   SetUserAction(new PlayG4SteppingAction(eventAction));
 }  
 

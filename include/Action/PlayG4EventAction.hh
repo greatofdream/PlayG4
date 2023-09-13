@@ -33,9 +33,11 @@
 #include "G4UserEventAction.hh"
 
 #include "globals.hh"
-
+#include "PlayG4Storage.hh"
+#include "PlayG4Struct.hh"
+#include <vector>
 /// Event action class
-
+#include "PlayG4Msg.hh"
 class PlayG4EventAction : public G4UserEventAction
 {
   public:
@@ -52,6 +54,18 @@ class PlayG4EventAction : public G4UserEventAction
     G4double proton_x;
     G4double proton_y;
     G4double proton_z;
+
+    std::map<Int_t/*TrackId*/, PlayG4SimTrack_t> fTrackContainer;
+    std::map<G4int/*vertex ID*/, PlayG4SimTruthTree_t> fTruthList;
+    void SaveTruthInfo(const G4Event* event);
+  private:
+		clock_t StartTime;
+		clock_t EndTime;
+		TTree* data;
+		TTree* SKG4data;
+
+		PlayG4Msg* fMessage = PlayG4Msg::GetInstance();
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

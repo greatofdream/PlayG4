@@ -33,6 +33,7 @@
 #include "G4RunManager.hh"
 // analysis
 #include "g4root.hh"
+#include "PlayG4Storage.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PlayG4RunAction::PlayG4RunAction()
@@ -40,20 +41,20 @@ PlayG4RunAction::PlayG4RunAction()
 { 
   // set printing event number per each 100 events
   G4RunManager::GetRunManager()->SetPrintProgress(1000);     
-  auto analysisManager = G4AnalysisManager::Instance();
-  G4cout << "Using " << analysisManager->GetType() <<G4endl;
-  analysisManager->SetVerboseLevel(1);
+  // auto analysisManager = G4AnalysisManager::Instance();
+  // G4cout << "Using " << analysisManager->GetType() <<G4endl;
+  // analysisManager->SetVerboseLevel(1);
   //analysisManager->SetNtupleMerging(true);
 
   // Creating ntuple
-  analysisManager->CreateNtuple("Energy", "Energy of nu or n");
-  analysisManager->CreateNtupleDColumn("nEnergy");
-  analysisManager->CreateNtupleDColumn("pEnergy");
-  analysisManager->CreateNtupleDColumn("pAniEnergy");
-  analysisManager->CreateNtupleDColumn("proton_x");
-  analysisManager->CreateNtupleDColumn("proton_y");
-  analysisManager->CreateNtupleDColumn("proton_z");
-  analysisManager->FinishNtuple();
+  // analysisManager->CreateNtuple("Energy", "Energy of nu or n");
+  // analysisManager->CreateNtupleDColumn("nEnergy");
+  // analysisManager->CreateNtupleDColumn("pEnergy");
+  // analysisManager->CreateNtupleDColumn("pAniEnergy");
+  // analysisManager->CreateNtupleDColumn("proton_x");
+  // analysisManager->CreateNtupleDColumn("proton_y");
+  // analysisManager->CreateNtupleDColumn("proton_z");
+  // analysisManager->FinishNtuple();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -67,9 +68,10 @@ void PlayG4RunAction::BeginOfRunAction(const G4Run*)
 { 
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
-  auto analysisManager = G4AnalysisManager::Instance();
-  G4String fileName = "background";
-  analysisManager->OpenFile(fileName);
+  // auto analysisManager = G4AnalysisManager::Instance();
+  // G4String fileName = "background";
+  // analysisManager->OpenFile(fileName);
+  auto RootFile = PlayG4Storage::GetInstance();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -79,9 +81,12 @@ void PlayG4RunAction::EndOfRunAction(const G4Run* run)
   G4int nofEvents = run->GetNumberOfEvent();
   if(nofEvents == 0) return;
   G4cout << "Events num:" << nofEvents <<G4endl;
-  auto analysisManager = G4AnalysisManager::Instance();
-  analysisManager->Write();
-  analysisManager->CloseFile();
+  // auto analysisManager = G4AnalysisManager::Instance();
+  // analysisManager->Write();
+  // analysisManager->CloseFile();
+  auto RootFile = PlayG4Storage::GetInstance();
+  RootFile->WriteData();
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

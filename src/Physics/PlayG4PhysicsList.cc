@@ -35,14 +35,14 @@ void PlayG4PhysicsList::SetPhysicsListEM(const G4String& name){
     if (name == fEmName) return;
     fEmName = name;
     if (name == "StandardPhysics") {
-        RegisterPhysics(new G4EmStandardPhysics());
+        ReplacePhysics(new G4EmStandardPhysics());
     } else if ( name == "StandardPhysics_option1") {
-        RegisterPhysics(new G4EmStandardPhysics_option1());
+        ReplacePhysics(new G4EmStandardPhysics_option1());
     } else if ( name == "LivermorePhysics") {
-        RegisterPhysics(new G4EmLivermorePhysics());
+        ReplacePhysics(new G4EmLivermorePhysics());
     } else {
         // fall into standard
-        RegisterPhysics(new G4EmStandardPhysics());
+        ReplacePhysics(new G4EmStandardPhysics());
     }
 }
 

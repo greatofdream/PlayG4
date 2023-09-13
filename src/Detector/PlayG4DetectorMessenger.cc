@@ -48,8 +48,8 @@ PlayG4DetectorMessenger::PlayG4DetectorMessenger(PlayG4DetectorConstruction* Det
 
   fTargMatCmd = new G4UIcmdWithAString("/PlayG4/det/setTargetMaterial",this);
   fTargMatCmd->SetGuidance("Select Material of the Target.");
-  fTargMatCmd->SetParameterName("choice",false);
-  fTargMatCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+  fTargMatCmd->SetParameterName("choice", false);
+  fTargMatCmd->AvailableForStates(G4State_PreInit, G4State_Idle);
 
   fChamMatCmd = new G4UIcmdWithAString("/PlayG4/det/setChamberMaterial",this);
   fChamMatCmd->SetGuidance("Select Material of the Chamber.");
