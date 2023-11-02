@@ -24,6 +24,7 @@ public:
     void CreateBranchesForSensorRoot();
     void FillMCTruth(PlayG4SimTruthTree_t truth);
 	void WriteData();
+    G4String fileName;
 
 private:
     TFile* fPlayG4File;

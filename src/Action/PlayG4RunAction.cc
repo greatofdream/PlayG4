@@ -39,6 +39,7 @@
 PlayG4RunAction::PlayG4RunAction()
  : G4UserRunAction()
 { 
+  fMessage->PrintOneLine("Constructor < Run Action >");
   // set printing event number per each 100 events
   G4RunManager::GetRunManager()->SetPrintProgress(1000);     
   // auto analysisManager = G4AnalysisManager::Instance();
@@ -72,6 +73,10 @@ void PlayG4RunAction::BeginOfRunAction(const G4Run*)
   // G4String fileName = "background";
   // analysisManager->OpenFile(fileName);
   auto RootFile = PlayG4Storage::GetInstance();
+
+  fMessage->PrintOneLine(":====== Run Info ======:");
+  fMessage->PrintOneLine("Output Root File name: "+RootFile->fileName);
+  fMessage->PrintOneLine(":====== Run Info ======:\n");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -80,13 +85,13 @@ void PlayG4RunAction::EndOfRunAction(const G4Run* run)
 {
   G4int nofEvents = run->GetNumberOfEvent();
   if(nofEvents == 0) return;
-  G4cout << "Events num:" << nofEvents <<G4endl;
+  fMessage->PrintOneLine(" Events num of This Run:" + nofEvents);
   // auto analysisManager = G4AnalysisManager::Instance();
   // analysisManager->Write();
   // analysisManager->CloseFile();
   auto RootFile = PlayG4Storage::GetInstance();
   RootFile->WriteData();
-
+  fMessage->PrintOneLine("~~~~~~~~ PlayG4 was completed ! ~~~~~~~");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

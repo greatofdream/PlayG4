@@ -32,7 +32,7 @@
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"
-
+#include "PlayG4Msg.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 class G4Run;
@@ -47,6 +47,9 @@ class PlayG4RunAction : public G4UserRunAction
 
     virtual void BeginOfRunAction(const G4Run* run);
     virtual void   EndOfRunAction(const G4Run* run);
+
+  private:
+    PlayG4Msg* fMessage = PlayG4Msg::GetInstance();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

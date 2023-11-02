@@ -27,7 +27,7 @@ PlayG4Storage::PlayG4Storage(){
 }
 
 PlayG4Storage::~PlayG4Storage(){
-    
+    fPlayG4File->Close();
 }
 PlayG4Storage* PlayG4Storage::GetInstance()
 {
@@ -38,12 +38,13 @@ PlayG4Storage* PlayG4Storage::GetInstance()
 void PlayG4Storage::CreateFile(G4String name)
 {
     fPlayG4File = new TFile(name, "Recreate", "Simulation File");
+    std::cout<<"PlayG4File Address: "<<fPlayG4File<<std::endl;
     truthTree = new TTree("SimTruth", "MonteCarloTruth");
     // trackTree = new TTree("SimTrack", "TrackInfo");
     
 	
     CreateBranchesForTruthRoot();
-	CreateBranchesForSensorRoot();
+	// CreateBranchesForSensorRoot();
 
 }
 void PlayG4Storage::CreateBranchesForTruthRoot(){
@@ -71,7 +72,9 @@ void PlayG4Storage::WriteData()
 {
     fPlayG4File->cd();
     truthTree->Write("", TObject::kOverwrite); 
-	// trackTree->Write("", TObject::kOverwrite);
-	fPlayG4File->Close();
+    int entries = truthTree->GetEntries();
+    std::cout<<"Entries:"<<entries<<" file:"<<truthTree->GetCurrentFile()<<std::endl;
 
+	// trackTree->Write("", TObject::kOverwrite);
+    fPlayG4File->Write();
 }

@@ -30,12 +30,14 @@
 #include "PlayG4DetectorConstruction.hh"
 #include "PlayG4ActionInitialization.hh"
 #include "PlayG4PhysicsList.hh"
-#ifdef G4MULTITHREADED
+#include "PlayG4Storage.hh"
+#if defined(G4MULTITHREADED) && defined(USE_MT)
 #include "G4MTRunManager.hh"
 #else
 #include "G4RunManager.hh"
 #endif
 
+#include "PlayG4Msg.hh"
 #include "G4UImanager.hh"
 #include "FTFP_BERT.hh"
 #include "G4StepLimiterPhysics.hh"
@@ -61,12 +63,13 @@ int main(int argc,char** argv)
   
   // Construct the default run manager
   //
-#ifdef G4MULTITHREADED
+#if defined(G4MULTITHREADED) && defined(USE_MT)
+  std::cout<<"PlayG4: Using Multithread"<<std::endl;
   G4MTRunManager* runManager = new G4MTRunManager;
 #else
+  std::cout<<"PlayG4: Using Single thread"<<std::endl;
   G4RunManager* runManager = new G4RunManager;
 #endif
-
   // Set mandatory initialization classes
   //
   runManager->SetUserInitialization(new PlayG4DetectorConstruction());
@@ -93,6 +96,18 @@ int main(int argc,char** argv)
   // Process macro or start UI session
   //
   if ( ! ui ) {
+    G4String outputFilename = "PlayG4Output.root";
+    if (argc>2){
+      outputFilename = argv[2];
+    }
+    auto RootFile = PlayG4Storage::GetInstance();
+    RootFile->fileName = outputFilename;
+    RootFile->CreateFile(RootFile->fileName);
+    PlayG4Msg* fMessage = PlayG4Msg::GetInstance();
+    fMessage->PrintOneLine(":====== Simulation Info ======:");
+    fMessage->PrintOneLine("Output Root File name: "+RootFile->fileName);
+    fMessage->PrintOneLine(":====== Simulation Info ======:\n");
+
     // barch mode
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
