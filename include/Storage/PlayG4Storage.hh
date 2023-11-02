@@ -22,7 +22,7 @@ public:
     void CreateFile(G4String fname);
     void CreateBranchesForTruthRoot();
     void CreateBranchesForSensorRoot();
-    void FillMCTruth(PlayG4SimTruthTree_t truth);
+    void FillMCTruth(const PlayG4SimTruthTree_t &truth);
 	void WriteData();
     G4String fileName;
 
@@ -31,6 +31,7 @@ private:
     TTree* truthTree;
     static PlayG4Storage* instance;
     PlayG4SimTruthTree_t SimTruth;
+    std::vector<int> testarray;
     // PlayG4SimTrackTree_t SimTrack;
 };
 #endif

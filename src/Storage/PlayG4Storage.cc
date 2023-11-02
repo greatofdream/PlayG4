@@ -27,7 +27,7 @@ PlayG4Storage::PlayG4Storage(){
 }
 
 PlayG4Storage::~PlayG4Storage(){
-    fPlayG4File->Close();
+    //fPlayG4File->Close();
 }
 PlayG4Storage* PlayG4Storage::GetInstance()
 {
@@ -49,21 +49,25 @@ void PlayG4Storage::CreateFile(G4String name)
 }
 void PlayG4Storage::CreateBranchesForTruthRoot(){
     truthTree->Branch("RunID", &SimTruth.RunId);
+    truthTree->Branch("EventID", &SimTruth.EventId);
     truthTree->Branch("VertexId", &SimTruth.VertexId);
+    truthTree->Branch("nParticle", &SimTruth.nParticle);
     truthTree->Branch("x", &SimTruth.x);
 	truthTree->Branch("y", &SimTruth.y);
 	truthTree->Branch("z", &SimTruth.z);
 	truthTree->Branch("Sec", &SimTruth.Sec);
 	truthTree->Branch("NanoSec", &SimTruth.NanoSec);
     truthTree->Branch("EkMerged", &SimTruth.EkMerged);
-    // truthTree->Branch("PrimaryParticleList", &SimTruth.PrimaryParticleList);
+    truthTree->Branch("PrimaryParticleList", &SimTruth.PrimaryParticleList);
+    truthTree->Branch("VertexRadA", &SimTruth.VertexRadA);
+    truthTree->Branch("testarray", &testarray);
 
     // TrackTree->Branch("trackList", &SimTrack);
 }
 void PlayG4Storage::CreateBranchesForSensorRoot(){
 
 }
-void PlayG4Storage::FillMCTruth(PlayG4SimTruthTree_t truth)
+void PlayG4Storage::FillMCTruth(const PlayG4SimTruthTree_t &truth)
 {
     SimTruth = truth;
     truthTree->Fill();
@@ -74,7 +78,10 @@ void PlayG4Storage::WriteData()
     truthTree->Write("", TObject::kOverwrite); 
     int entries = truthTree->GetEntries();
     std::cout<<"Entries:"<<entries<<" file:"<<truthTree->GetCurrentFile()<<std::endl;
+    std::cout<<"PrimaryParticleList"<<SimTruth.PrimaryParticleList[0].PdgId<<std::endl;
 
 	// trackTree->Write("", TObject::kOverwrite);
-    fPlayG4File->Write();
+    //truthTree->AutoSave();
+    //fPlayG4File->Write();
+    fPlayG4File->Close();
 }

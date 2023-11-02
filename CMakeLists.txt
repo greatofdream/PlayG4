@@ -47,6 +47,10 @@ file(GLOB_RECURSE headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 add_executable(PlayG4 PlayG4.cc ${sources} ${headers})
 target_link_libraries(PlayG4 ${Geant4_LIBRARIES})
 target_link_libraries(PlayG4 ${ROOT_LIBRARIES})
+target_link_libraries(PlayG4 ROOT::RIO)
+target_include_directories(PlayG4 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+ROOT_GENERATE_DICTIONARY(PlayG4_dict PlayG4Struct.hh MODULE PlayG4 LINKDEF
+	LinkDef.h)
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
 # build B2b. This is so that we can run the executable directly because it
