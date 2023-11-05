@@ -15,6 +15,14 @@ PlayG4PhysicsListMessenger::PlayG4PhysicsListMessenger(PlayG4PhysicsList* pPhys)
 	fEMListCmd->SetGuidance("Set Electromagnetic physicsList.");
 	fEMListCmd->SetParameterName("fEmName",true);
 	fEMListCmd->SetDefaultValue("StandardPhysics");
+    fOpListCmd = new G4UIcmdWithAString("/PlayG4/Physics/SetPhysicsOptical",this);  
+	fEMListCmd->SetGuidance("Set Optical module physicsList.");
+	fEMListCmd->SetParameterName("fOpName",true);
+	fEMListCmd->SetDefaultValue("local");
+    fDeListCmd = new G4UIcmdWithAString("/PlayG4/Physics/SetPhysicsDecay",this);  
+	fEMListCmd->SetGuidance("Set Decay module physicsList.");
+	fEMListCmd->SetParameterName("fDeName",true);
+	fEMListCmd->SetDefaultValue("on");
 }
 PlayG4PhysicsListMessenger::~PlayG4PhysicsListMessenger()
 {

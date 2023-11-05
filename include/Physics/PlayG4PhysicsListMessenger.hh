@@ -18,7 +18,9 @@ public:
 private:  
     PlayG4PhysicsList*        fPhysicsList;
     G4UIdirectory*      fPhysDir;
-	G4UIcmdWithAString* fEMListCmd;
+    G4UIcmdWithAString* fEMListCmd;
+    G4UIcmdWithAString* fOpListCmd;
+    G4UIcmdWithAString* fDeListCmd;
 
 };
 #endif
