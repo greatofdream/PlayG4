@@ -32,7 +32,10 @@
 
 #include "globals.hh"
 #include "G4VUserDetectorConstruction.hh"
+#include "G4MaterialPropertiesTable.hh"
 #include "tls.hh"
+
+#include "PlayG4Msg.hh"
 
 class G4VPhysicalVolume;
 class G4LogicalVolume;
@@ -60,7 +63,8 @@ class PlayG4DetectorConstruction : public G4VUserDetectorConstruction
     void SetChamberMaterial(G4String );
     void SetMaxStep (G4double );
     void SetCheckOverlaps(G4bool );
-
+    G4int CountNumbersOfTextLines(const char* filePath);
+    G4MaterialPropertiesTable* GetPropertyTable(G4String FileName);
     G4LogicalVolume* GetScoringVolume()const{return labLV;};
 
   private:
@@ -75,6 +79,8 @@ class PlayG4DetectorConstruction : public G4VUserDetectorConstruction
     G4Material*        fTargetMaterial;  // pointer to the target  material
     G4Material*        fChamberMaterial; // pointer to the chamber material
     G4Material*        fShieldMaterial;
+
+    G4String fWaterPropertyFile;
     
     G4UserLimits*      fStepLimit;       // pointer to user step limits
 
@@ -84,8 +90,8 @@ class PlayG4DetectorConstruction : public G4VUserDetectorConstruction
                                          // magnetic field messenger
     
     G4bool  fCheckOverlaps; // option to activate checking of volumes overlaps 
+    PlayG4Msg* fMessage = PlayG4Msg::GetInstance();
 };
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif

@@ -65,7 +65,7 @@ PlayG4DetectorConstruction::PlayG4DetectorConstruction()
  fLogicTarget(NULL), labLV(NULL), 
  fTargetMaterial(NULL), fChamberMaterial(NULL), 
  fStepLimit(NULL), 
- fCheckOverlaps(true)
+ fCheckOverlaps(true), fWaterPropertyFile("data/Water.dat")
 {
   fMessenger = new PlayG4DetectorMessenger(this);
 }
@@ -108,11 +108,16 @@ void PlayG4DetectorConstruction::DefineMaterials()
   G4Element* H = nistManager->FindOrBuildElement("H", isotopes);
   G4Element* C = nistManager->FindOrBuildElement("C", isotopes);
   G4double density = 0.863*g/cm3;
-  fChamberMaterial = new G4Material("LAB", density, 2);
-  fChamberMaterial->AddElement(H, 30);
-  fChamberMaterial->AddElement(C, 18);
+  // fChamberMaterial = new G4Material("LAB", density, 2);
+  // fChamberMaterial->AddElement(H, 30);
+  // fChamberMaterial->AddElement(C, 18);
+  fChamberMaterial = nistManager->FindOrBuildMaterial("G4_WATER");
   // Print materials
   G4cout << *(G4Material::GetMaterialTable()) << G4endl;
+  auto* Water_MPT = GetPropertyTable(fWaterPropertyFile);
+  // SetWaterMaterial(Water_MPT);
+  // SetMaterialPropertyMap("Water",  fWaterPropertyFile);
+  fChamberMaterial->SetMaterialPropertiesTable(Water_MPT);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -384,3 +389,117 @@ void PlayG4DetectorConstruction::SetMaxStep(G4double maxStep)
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4int PlayG4DetectorConstruction::CountNumbersOfTextLines(const char* filePath)
+{
+  G4long i = 0;
+  ifstream ifs(filePath);
+  if (ifs) {
+    G4String line;
+    while (true) {
+      getline(ifs, line);
+      i++;
+      if (ifs.eof()) break;
+    }
+  }
+
+  return i-2;	//Header and EOF
+}
+
+G4MaterialPropertiesTable* PlayG4DetectorConstruction::GetPropertyTable(G4String FileName)
+{
+  // #----------------------------------------#
+  // Open the Property Table 
+  // #----------------------------------------#
+  // FileName = PlayG4::ParseEnv(FileName);
+  ifstream Data(FileName.c_str(),ios_base::in);
+  if (!Data) {
+    fMessage->AddMessage("Material Property File couldn't open : ");
+    fMessage->AddMessage(FileName);
+    fMessage->PrintErr(true);
+  }
+
+  // #----------------------------------------#
+  // Counting the Column in the File
+  // #----------------------------------------#
+  G4String str;
+  G4String tmp;
+  G4int Column = 0;
+  getline(Data,str);
+  istringstream stream(str);
+  while (getline(stream,tmp,' ')) Column++;
+  const G4int Entries = CountNumbersOfTextLines(FileName.c_str());
+  G4double *Energy = new G4double[Entries];
+  G4double *RefIndex = new G4double[Entries];
+  G4double *Absorption = new G4double[Entries];
+  G4double *Rayleigh = new G4double[Entries];
+  G4double *MieScat = new G4double[Entries];
+  G4double *MieForward = new G4double[Entries];
+  G4double *MieBackward =	new G4double[Entries];
+  G4double *MieForwardRatio =	new G4double[Entries];
+
+  // #----------------------------------------#
+  // Fill the Property Table to Array
+  // #----------------------------------------#
+  G4int index = 0;
+  G4bool forward_flag = false;
+  G4bool backward_flag = false ;
+  G4bool ratio_flag = false;
+  if (Column==8) {
+    Data>>Energy[0]>>RefIndex[0]>>Absorption[0]>>Rayleigh[0]>>MieScat[0]>>MieForward[0]>>MieBackward[0]>>MieForwardRatio[0];
+    while (!Data.eof()) {
+      Energy[index] = Energy[index]*eV;
+      Absorption[index] = Absorption[index]*m;
+      Rayleigh[index] = Rayleigh[index]*m;
+      MieScat[index] = MieScat[index]*m;
+      if (MieForward[0]!=MieForward[index]) forward_flag = true;
+      if (MieBackward[0]!=MieBackward[index]) backward_flag = true;
+      if (MieForwardRatio[0]!=MieForwardRatio[index]) ratio_flag = true;
+      index++;
+
+      Data>>Energy[index]>>RefIndex[index]>>Absorption[index]>>Rayleigh[index]>>MieScat[index]>>MieForward[index]>>MieBackward[index]>>MieForwardRatio[index];
+    }
+  } else if (Column==3) {
+    Data>>Energy[0]>>RefIndex[0]>>Absorption[0];
+    while (!Data.eof()) {
+      Energy[index] = Energy[index]*eV;
+      Absorption[index] = Absorption[index]*m;
+      index++;
+
+      Data>>Energy[index]>>RefIndex[index]>>Absorption[index];
+    }
+  } else if (Column==2) {
+    Data>>Energy[0]>>RefIndex[0];
+    while (!Data.eof()) {
+      Energy[index] = Energy[index]*eV;
+      index++;
+
+      Data>>Energy[index]>>RefIndex[index];
+    }
+  } else {
+    fMessage->AddMessage("Material Property File isn't much data table");
+    fMessage->AddMessage(FileName);
+    fMessage->PrintErr(true);
+  }
+
+  // #----------------------------------------#
+  // Fill the Property Table to G4 Class
+  // #----------------------------------------#
+  auto* MPT = new G4MaterialPropertiesTable();
+  if (Column>1) MPT->AddProperty("RINDEX",	Energy, RefIndex,	Entries);
+  if (Column>2) MPT->AddProperty("ABSLENGTH",	Energy, Absorption,	Entries);
+  if (Column>3) MPT->AddProperty("RAYLEIGH",	Energy, Rayleigh,	Entries);
+  if (Column>4) {
+    MPT->AddProperty("MIEHG", Energy, MieScat, Entries);
+    if (!forward_flag) MPT->AddConstProperty("MIEHG_FORWARD", MieForward[0]);
+    if (forward_flag) MPT->AddProperty("MIEHG_FORWARD", Energy, MieForward, Entries);
+    if (!backward_flag) MPT->AddConstProperty("MIEHG_BACKWARD", MieBackward[0]);
+    if (backward_flag) MPT->AddProperty("MIEHG_BACKWARD", Energy, MieBackward, Entries);
+    if (!ratio_flag) MPT->AddConstProperty("MIEHG_FORWARD_RATIO", MieForwardRatio[0]);
+    if (ratio_flag) MPT->AddProperty("MIEHG_FORWARD_RATIO", Energy, MieForwardRatio, Entries);
+  }
+  MPT->AddConstProperty("SCINTILLATIONYIELD", 0./MeV);
+
+  Data.close();
+  return MPT;
+}
+

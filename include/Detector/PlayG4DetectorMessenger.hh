@@ -61,6 +61,7 @@ class PlayG4DetectorMessenger: public G4UImessenger
     G4UIdirectory*           fPlayG4Directory;
     G4UIdirectory*           fDetDirectory;
 
+    G4UIcmdWithAString*      fWaterPropertyCmd;
     G4UIcmdWithAString*      fTargMatCmd;
     G4UIcmdWithAString*      fChamMatCmd;
 
