@@ -28,6 +28,7 @@
 /// \brief Implementation of the PlayG4EventAction class
 
 #include "PlayG4EventAction.hh"
+#include "PlayG4UserEventInformation.hh"
 
 #include "G4Event.hh"
 #include "G4EventManager.hh"
@@ -88,6 +89,8 @@ void PlayG4EventAction::BeginOfEventAction(const G4Event* event)
 		fMessage->PrintOneLine("==============================================");
 	}
 	auto RootFile = PlayG4Storage::GetInstance();
+	
+	G4EventManager::GetEventManager()->SetUserInformation(new PlayG4UserEventInformation);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -100,6 +103,9 @@ void PlayG4EventAction::EndOfEventAction(const G4Event* event)
 		 G4cerr<<" Current Event No. is "<<evtID<<" ("<<(double)(EndTime-StartTime) / CLOCKS_PER_SEC<<" sec)"<< G4endl;
 	}
 	SaveTruthInfo(event);
+	PlayG4UserEventInformation* eventInformation = (PlayG4UserEventInformation*)event->GetUserInformation();
+	PlayG4Storage::GetInstance()->FillMCTrack(eventInformation->SimTrack);
+	PlayG4Storage::GetInstance()->FillMCStep(eventInformation->SimStep);
 	// auto Parameters = PlayG4Parameters::GetME();
 
 	// if(RootFile->GetSecondaryTreeFlag()){
@@ -108,7 +114,6 @@ void PlayG4EventAction::EndOfEventAction(const G4Event* event)
 	// }
 
 	
-//   SaveTruthInfo(event);
   // analysisManager
   // auto analysisManager = G4AnalysisManager::Instance();
   // analysisManager->FillNtupleDColumn(0, nEnergy);
@@ -162,15 +167,15 @@ void PlayG4EventAction::SaveTruthInfo(const G4Event* event)
 		vertexTruth.x = gpVertex->GetX0()/CLHEP::mm;	
 		vertexTruth.y = gpVertex->GetY0()/CLHEP::mm;
 		vertexTruth.z = gpVertex->GetZ0()/CLHEP::mm;
-
+                vertexTruth.Sec = gpVertex->GetT0()/CLHEP::second;//+iter->GetSec();
+		vertexTruth.NanoSec = gpVertex->GetT0()/CLHEP::ns;//+iter->GetNanoSec();
+	
 		// vertexTruth.dEList.resize(fDetConstruction->ndE);
 
 		for(Int_t j=0; j<event->GetPrimaryVertex(i)->GetNumberOfParticle(); j++)
 		{
 				
-			vertexTruth.Sec = gpVertex->GetT0()/CLHEP::second;//+iter->GetSec();
-			vertexTruth.NanoSec = gpVertex->GetT0()/CLHEP::ns;//+iter->GetNanoSec();
-			
+		
 			G4PrimaryParticle* gpParticle = gpVertex->GetPrimary(j);
 			G4int nTrack = gpParticle->GetTrackID();
 			// TrackMap[nTrack] = i;
@@ -196,7 +201,7 @@ void PlayG4EventAction::SaveTruthInfo(const G4Event* event)
 			// 		vertexTruth.dEList[k] += fdEList[nTrack][k];
 			// }
 
-			// vertexTruth.PrimaryParticleList.emplace_back(jpParticle);
+			vertexTruth.PrimaryParticleList.emplace_back(jpParticle);
 			// for(auto iter = fTrackContainer.begin(); iter != fTrackContainer.end(); )
 			// {
 			// 	if(iter->second.nPrimaryId==nTrack)

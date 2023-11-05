@@ -8,7 +8,8 @@
 
 #pragma link C++ class PlayG4SimTruthTree_t+;
 
-#pragma link C++ class PlayG4SimStepPoint_t+;
+#pragma link C++ class PlayG4SimStep_t+;
 
+#pragma link C++ class PlayG4SimTrack_t+;
 
 #endif

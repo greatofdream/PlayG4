@@ -9,6 +9,7 @@
 // For PlayG4
 #include "PlayG4TrackingAction.hh"
 #include "PlayG4Struct.hh"
+#include "PlayG4UserEventInformation.hh"
 
 PlayG4TrackingAction::PlayG4TrackingAction()
 {
@@ -25,10 +26,15 @@ PlayG4TrackingAction::~PlayG4TrackingAction()
 
 void PlayG4TrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
-
 }
 
 void PlayG4TrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 {
+    PlayG4UserEventInformation *eventInformation
+		= (PlayG4UserEventInformation*)G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetUserInformation();
+    eventInformation->SimTrack.TrackId.emplace_back(aTrack->GetTrackID());
+    eventInformation->SimTrack.ParentTrackId.emplace_back(aTrack->GetParentID());
+    eventInformation->SimTrack.PdgId.emplace_back(aTrack->GetDefinition()->GetPDGEncoding());
+    eventInformation->SimTrack.TrackLength.emplace_back(aTrack->GetTrackLength());
 
 }

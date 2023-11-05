@@ -1,6 +1,7 @@
 #include "PlayG4SteppingAction.hh"
 #include "PlayG4EventAction.hh"
 #include "PlayG4DetectorConstruction.hh"
+#include "PlayG4UserEventInformation.hh"
 
 #include "G4Step.hh"
 #include "G4Event.hh"
@@ -45,7 +46,26 @@ void PlayG4SteppingAction::UserSteppingAction(const G4Step* step)
   // check if we are in scoring volume
   //if (volume != fScoringVolume) return;
   G4Track* track = step->GetTrack();
-  if(fEventAction->nFlag && track->GetDefinition() == G4Neutron::Neutron()){
+  auto particle = track->GetDefinition()->GetParticleName();
+  auto PrePoint = step->GetPreStepPoint();
+  auto PostPoint = step->GetPostStepPoint();
+  auto theProcess = PostPoint->GetProcessDefinedStep();
+  if(particle !="opticalphoton"){
+    PlayG4UserEventInformation *eventInformation
+		= (PlayG4UserEventInformation*)G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetUserInformation();
+    // store the step information, default without photon
+    eventInformation->SimStep.TrackId.emplace_back(track->GetTrackID());
+    eventInformation->SimStep.PdgId.emplace_back(track->GetDefinition()->GetPDGEncoding());
+    eventInformation->SimStep.nProcessType.emplace_back(theProcess->GetProcessType());
+    eventInformation->SimStep.nProcessSubType.emplace_back(theProcess->GetProcessSubType());
+    eventInformation->SimStep.StepPoint.emplace_back(PrePoint->GetPosition());
+    eventInformation->SimStep.StepPoint_Post.emplace_back(PostPoint->GetPosition());
+    eventInformation->SimStep.StepLength.emplace_back(step->GetStepLength());
+    eventInformation->SimStep.dE.emplace_back(step->GetTotalEnergyDeposit());
+    eventInformation->SimStep.P.emplace_back(PrePoint->GetMomentum());
+    eventInformation->SimStep.E_k.emplace_back(PrePoint->GetKineticEnergy());
+    }
+/*  if(fEventAction->nFlag && track->GetDefinition() == G4Neutron::Neutron()){
     fEventAction->nEnergy = track->GetKineticEnergy();
     fEventAction->nFlag = false;
   } 
@@ -57,12 +77,13 @@ void PlayG4SteppingAction::UserSteppingAction(const G4Step* step)
     fEventAction->proton_z = track->GetVertexPosition().z();//step->GetPreStepPoint()->GetPosition().z();//track->GetPosition().z();
     fEventAction->pFlag = false;
   }
+*/
   //if (track->GetDefinition() != G4Neutron::Neutron())
-  if (track->GetDefinition() == G4Proton::Proton())
+/*  if (track->GetDefinition() == G4Proton::Proton())
   {
     fEventAction->pAniEnergy += step->GetTotalEnergyDeposit();
   }
-  
+*/ 
   // collect energy deposited in this step
   // G4double edepStep = step->GetTotalEnergyDeposit();
   // fEventAction->AddEdep(edepStep);  

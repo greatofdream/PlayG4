@@ -2,8 +2,11 @@
 #define PlayG4Struct_H 1
 #include "TFile.h"
 #include "TTree.h"
-#include "globals.hh"
+#include <Math/Vector3D.h>
+#include <Math/Vector4D.h>
+//#include "globals.hh"
 
+struct PlayG4PrimaryParticle_t;
 struct PlayG4SimStepPoint_t
 {
 	Int_t nProcessType;
@@ -25,12 +28,27 @@ struct PlayG4SimStepPoint_t
 
 struct PlayG4SimTrack_t
 {
-	Int_t nParentTrackId;
-	Int_t nTrackId;
-	Int_t nPrimaryId;
-	Int_t nPdgId;
-	std::vector<PlayG4SimStepPoint_t> StepPoints;
+	std::vector<Int_t> ParentTrackId;
+	std::vector<Int_t> TrackId;
+	std::vector<Int_t> PdgId;
+	std::vector<Double_t> TrackLength;
+	std::vector<ROOT::Math::XYZVector> StartPoint;
+	std::vector<ROOT::Math::XYZVector> EndPoint;
+	// std::vector<PlayG4SimStepPoint_t> StepPoints;
 	PlayG4SimTrack_t() {}
+};
+struct PlayG4SimStep_t
+{
+    std::vector<Int_t>  TrackId;
+    std::vector<Int_t> PdgId;
+    std::vector<Int_t> nProcessType;
+    std::vector<Int_t> nProcessSubType;
+    std::vector<ROOT::Math::XYZVector> StepPoint;
+    std::vector<ROOT::Math::XYZVector> StepPoint_Post;
+    std::vector<Double_t> StepLength;
+    std::vector<Double_t> dE;
+    std::vector<ROOT::Math::XYZVector> P;
+    std::vector<Double_t> E_k;
 };
 
 struct PlayG4SimTruthTree_t {
@@ -48,7 +66,7 @@ struct PlayG4SimTruthTree_t {
 	Int_t NanoSec;
 	Double_t EkMerged;
 	std::vector<Double_t> dEList;	// Energy deposit in tagged volumes
-	std::vector<PlayG4SimTrack_t> trackList;
+	std::vector<PlayG4PrimaryParticle_t> PrimaryParticleList;
 	PlayG4SimTruthTree_t()
 	{
 		EkMerged = 0;
