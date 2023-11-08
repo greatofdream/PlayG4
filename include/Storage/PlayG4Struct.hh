@@ -31,11 +31,16 @@ struct PlayG4SimTrack_t
 	std::vector<Int_t> ParentTrackId;
 	std::vector<Int_t> TrackId;
 	std::vector<Int_t> PdgId;
+	std::vector<Int_t> StepId;
 	std::vector<Double_t> TrackLength;
-	std::vector<ROOT::Math::XYZVector> StartPoint;
-	std::vector<ROOT::Math::XYZVector> EndPoint;
+	std::vector<Double_t> StartPoint_x;
+	std::vector<Double_t> StartPoint_y;
+	std::vector<Double_t> StartPoint_z;
+	std::vector<Double_t> EndPoint_x;
+	std::vector<Double_t> EndPoint_y;
+	std::vector<Double_t> EndPoint_z;
 	// std::vector<PlayG4SimStepPoint_t> StepPoints;
-	PlayG4SimTrack_t() {}
+	// PlayG4SimTrack_t() {}
 };
 struct PlayG4SimStep_t
 {
@@ -43,11 +48,17 @@ struct PlayG4SimStep_t
     std::vector<Int_t> PdgId;
     std::vector<Int_t> nProcessType;
     std::vector<Int_t> nProcessSubType;
-    std::vector<ROOT::Math::XYZVector> StepPoint;
-    std::vector<ROOT::Math::XYZVector> StepPoint_Post;
+    std::vector<Double_t> StepPoint_Pre_x;
+    std::vector<Double_t> StepPoint_Pre_y;
+    std::vector<Double_t> StepPoint_Pre_z;
+    std::vector<Double_t> StepPoint_Post_x;
+    std::vector<Double_t> StepPoint_Post_y;
+    std::vector<Double_t> StepPoint_Post_z;
     std::vector<Double_t> StepLength;
     std::vector<Double_t> dE;
-    std::vector<ROOT::Math::XYZVector> P;
+    std::vector<Double_t> Px;
+    std::vector<Double_t> Py;
+    std::vector<Double_t> Pz;
     std::vector<Double_t> E_k;
 };
 

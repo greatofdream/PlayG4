@@ -66,6 +66,7 @@ void PlayG4Storage::CreateBranchesForTruthRoot(){
     // track tree
     trackTree->Branch("ParentTrackId", &SimTrack.ParentTrackId);
     trackTree->Branch("TrackId", &SimTrack.TrackId);
+    trackTree->Branch("StepId", &SimTrack.StepId);
     trackTree->Branch("PdgId", &SimTrack.PdgId);
     trackTree->Branch("TrackLength", &SimTrack.TrackLength);
     // steps tree
@@ -73,11 +74,17 @@ void PlayG4Storage::CreateBranchesForTruthRoot(){
     stepTree->Branch("PdgId", &SimStep.PdgId);
     stepTree->Branch("ProcessType", &SimStep.nProcessType);
     stepTree->Branch("ProcessSubType", &SimStep.nProcessSubType);
-    stepTree->Branch("StepPoint", &SimStep.StepPoint);
-    stepTree->Branch("StepPoint_Post", &SimStep.StepPoint_Post);
+    stepTree->Branch("StepPoint_Pre_x", &SimStep.StepPoint_Pre_x);
+    stepTree->Branch("StepPoint_Pre_y", &SimStep.StepPoint_Pre_y);
+    stepTree->Branch("StepPoint_Pre_z", &SimStep.StepPoint_Pre_z);
+    stepTree->Branch("StepPoint_Post_x", &SimStep.StepPoint_Post_x);
+    stepTree->Branch("StepPoint_Post_y", &SimStep.StepPoint_Post_y);
+    stepTree->Branch("StepPoint_Post_z", &SimStep.StepPoint_Post_z);
     stepTree->Branch("StepLength", &SimStep.StepLength);
     stepTree->Branch("dE", &SimStep.dE);
-    stepTree->Branch("P", &SimStep.P);
+    stepTree->Branch("Px", &SimStep.Px);
+    stepTree->Branch("Py", &SimStep.Py);
+    stepTree->Branch("Pz", &SimStep.Pz);
     stepTree->Branch("E_k", &SimStep.E_k);
 }
 void PlayG4Storage::CreateBranchesForSensorRoot(){
