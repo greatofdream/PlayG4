@@ -74,6 +74,11 @@ foreach(_script ${PlayG4_SCRIPTS})
     )
 endforeach()
 
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/data
+    $<TARGET_FILE_DIR:${PROJECT_NAME}>/data)
+
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
