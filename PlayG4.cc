@@ -96,6 +96,7 @@ int main(int argc,char** argv)
   // Process macro or start UI session
   //
   if ( ! ui ) {
+    // default output file name
     G4String outputFilename = "PlayG4Output.root";
     if (argc>2){
       outputFilename = argv[2];
@@ -112,6 +113,7 @@ int main(int argc,char** argv)
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
     UImanager->ApplyCommand(command + fileName);
+    fMessage->PrintOneLine("~~~~~~~~ PlayG4 was completed ! ~~~~~~~");
   }
   else {  
     // interactive mode

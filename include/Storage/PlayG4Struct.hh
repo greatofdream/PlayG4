@@ -39,6 +39,12 @@ struct PlayG4SimTrack_t
 	std::vector<Double_t> EndPoint_x;
 	std::vector<Double_t> EndPoint_y;
 	std::vector<Double_t> EndPoint_z;
+    std::vector<Double_t> Px;
+    std::vector<Double_t> Py;
+    std::vector<Double_t> Pz;
+    std::vector<Double_t> E_k;
+    std::vector<Int_t> nProcessType;
+    std::vector<Int_t> nProcessSubType;
 	// std::vector<PlayG4SimStepPoint_t> StepPoints;
 	// PlayG4SimTrack_t() {}
 };
@@ -46,8 +52,6 @@ struct PlayG4SimStep_t
 {
     std::vector<Int_t>  TrackId;
     std::vector<Int_t> PdgId;
-    std::vector<Int_t> nProcessType;
-    std::vector<Int_t> nProcessSubType;
     std::vector<Double_t> StepPoint_Pre_x;
     std::vector<Double_t> StepPoint_Pre_y;
     std::vector<Double_t> StepPoint_Pre_z;
@@ -60,6 +64,9 @@ struct PlayG4SimStep_t
     std::vector<Double_t> Py;
     std::vector<Double_t> Pz;
     std::vector<Double_t> E_k;
+    std::vector<Double_t> T;
+    std::vector<Int_t> nProcessType;
+    std::vector<Int_t> nProcessSubType;
 };
 
 struct PlayG4SimTruthTree_t {

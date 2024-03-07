@@ -91,7 +91,7 @@ void PlayG4RunAction::EndOfRunAction(const G4Run* run)
   // analysisManager->CloseFile();
   auto RootFile = PlayG4Storage::GetInstance();
   RootFile->WriteData();
-  fMessage->PrintOneLine("~~~~~~~~ PlayG4 was completed ! ~~~~~~~");
+  fMessage->PrintOneLine("~~~~~~~~ End of This Run ~~~~~~~");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

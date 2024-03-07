@@ -42,8 +42,6 @@ void PlayG4Storage::CreateFile(G4String name)
     truthTree = new TTree("SimTruth", "MonteCarloTruth");
     trackTree = new TTree("SimTrack", "MonteCarloTrack");
     stepTree = new TTree("SimStep", "MonteCarloStep");
-    // trackTree = new TTree("SimTrack", "TrackInfo");
-    
 	
     CreateBranchesForTruthRoot();
 	// CreateBranchesForSensorRoot();
@@ -86,6 +84,7 @@ void PlayG4Storage::CreateBranchesForTruthRoot(){
     stepTree->Branch("Py", &SimStep.Py);
     stepTree->Branch("Pz", &SimStep.Pz);
     stepTree->Branch("E_k", &SimStep.E_k);
+    stepTree->Branch("T", &SimStep.T);
 }
 void PlayG4Storage::CreateBranchesForSensorRoot(){
 
@@ -110,7 +109,7 @@ void PlayG4Storage::FillMCStep(const PlayG4SimStep_t &steps)
 void PlayG4Storage::WriteData()
 {
     fPlayG4File->cd();
-    truthTree->Write("", TObject::kOverwrite); 
+    truthTree->Write("", TObject::kOverwrite);
     trackTree->Write("", TObject::kOverwrite);
     stepTree->Write("", TObject::kOverwrite);
     // int entries = truthTree->GetEntries();

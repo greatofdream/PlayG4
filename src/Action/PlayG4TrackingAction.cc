@@ -26,17 +26,13 @@ PlayG4TrackingAction::~PlayG4TrackingAction()
 
 void PlayG4TrackingAction::PreUserTrackingAction(const G4Track* aTrack)
 {
+        PlayG4UserEventInformation *eventInformation
+		= (PlayG4UserEventInformation*)G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetUserInformation();
+	eventInformation->StoreTrack(aTrack);
 }
 
 void PlayG4TrackingAction::PostUserTrackingAction(const G4Track* aTrack)
 {
     if ( aTrack->GetTrackStatus()==fStopAndKill){
-        PlayG4UserEventInformation *eventInformation
-		= (PlayG4UserEventInformation*)G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetUserInformation();
-        eventInformation->SimTrack.TrackId.emplace_back(aTrack->GetTrackID());
-        eventInformation->SimTrack.StepId.emplace_back(aTrack->GetCurrentStepNumber());
-        eventInformation->SimTrack.ParentTrackId.emplace_back(aTrack->GetParentID());
-        eventInformation->SimTrack.PdgId.emplace_back(aTrack->GetDefinition()->GetPDGEncoding());
-        eventInformation->SimTrack.TrackLength.emplace_back(aTrack->GetTrackLength());
     }
 }

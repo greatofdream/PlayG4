@@ -99,7 +99,7 @@ void PlayG4EventAction::EndOfEventAction(const G4Event* event)
 {
 	if ( event->IsAborted() ) return;
 	auto evtID = event->GetEventID();
-	if (evtID%100==0){
+	if (evtID%1000==0){
 		 G4cerr<<" Current Event No. is "<<evtID<<" ("<<(double)(EndTime-StartTime) / CLOCKS_PER_SEC<<" sec)"<< G4endl;
 	}
 	SaveTruthInfo(event);

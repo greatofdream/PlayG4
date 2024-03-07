@@ -53,26 +53,11 @@ void PlayG4SteppingAction::UserSteppingAction(const G4Step* step)
   auto PrePos = PrePoint->GetPosition();
   auto PostPos = PostPoint->GetPosition();
   auto P = PrePoint->GetMomentum();
+  PlayG4UserEventInformation *eventInformation
+	= (PlayG4UserEventInformation*)G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetUserInformation();
   if(particle !="opticalphoton"){
-    PlayG4UserEventInformation *eventInformation
-		= (PlayG4UserEventInformation*)G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetUserInformation();
     // store the step information, default without photon
-    eventInformation->SimStep.TrackId.emplace_back(track->GetTrackID());
-    eventInformation->SimStep.PdgId.emplace_back(track->GetDefinition()->GetPDGEncoding());
-    eventInformation->SimStep.nProcessType.emplace_back(theProcess->GetProcessType());
-    eventInformation->SimStep.nProcessSubType.emplace_back(theProcess->GetProcessSubType());
-    eventInformation->SimStep.StepPoint_Pre_x.emplace_back(PrePos.x());
-    eventInformation->SimStep.StepPoint_Pre_y.emplace_back(PrePos.y());
-    eventInformation->SimStep.StepPoint_Pre_z.emplace_back(PrePos.z());
-    eventInformation->SimStep.StepPoint_Post_x.emplace_back(PostPos.x());
-    eventInformation->SimStep.StepPoint_Post_y.emplace_back(PostPos.y());
-    eventInformation->SimStep.StepPoint_Post_z.emplace_back(PostPos.z());
-    eventInformation->SimStep.StepLength.emplace_back(step->GetStepLength());
-    eventInformation->SimStep.dE.emplace_back(step->GetTotalEnergyDeposit());
-    eventInformation->SimStep.Px.emplace_back(P.x());
-    eventInformation->SimStep.Py.emplace_back(P.y());
-    eventInformation->SimStep.Pz.emplace_back(P.z());
-    eventInformation->SimStep.E_k.emplace_back(PrePoint->GetKineticEnergy());
+    eventInformation->StoreStep(step);
     }
 /*  if(fEventAction->nFlag && track->GetDefinition() == G4Neutron::Neutron()){
     fEventAction->nEnergy = track->GetKineticEnergy();

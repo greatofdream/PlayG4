@@ -18,6 +18,9 @@ class PlayG4UserEventInformation : public G4VUserEventInformation
 		inline void Print()const{};
 		PlayG4SimTrack_t SimTrack;
 		PlayG4SimStep_t SimStep; // Default without the photons
+		void StoreStep(const G4Step* step);
+		void StoreTrack(const G4Track* track);
+
 	private:
 		G4int 			fCeren_PhotonCount;
 		vector<G4double>	fCeren_GTime;
