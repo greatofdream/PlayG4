@@ -67,6 +67,15 @@ void PlayG4Storage::CreateBranchesForTruthRoot(){
     trackTree->Branch("StepId", &SimTrack.StepId);
     trackTree->Branch("PdgId", &SimTrack.PdgId);
     trackTree->Branch("TrackLength", &SimTrack.TrackLength);
+    trackTree->Branch("ProcessType", &SimTrack.nProcessType);
+    trackTree->Branch("ProcessSubType", &SimTrack.nProcessSubType);
+    trackTree->Branch("StartPoint_x", &SimTrack.StartPoint_x);
+    trackTree->Branch("StartPoint_y", &SimTrack.StartPoint_y);
+    trackTree->Branch("StartPoint_z", &SimTrack.StartPoint_z);
+    trackTree->Branch("Px", &SimTrack.Px);
+    trackTree->Branch("Py", &SimTrack.Py);
+    trackTree->Branch("Pz", &SimTrack.Pz);
+    trackTree->Branch("E_k", &SimTrack.E_k);
     // steps tree
     stepTree->Branch("TrackId", &SimStep.TrackId);
     stepTree->Branch("PdgId", &SimStep.PdgId);

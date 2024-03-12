@@ -14,21 +14,38 @@ simtruth = uproot.open(args.ipt+":SimTruth")
 simtrack = uproot.open(args.ipt+":SimTrack")
 simstep = uproot.open(args.ipt+":SimStep")
 # electron step array: The result array is hierarchical structure, have to use awkward array to do selection
-step_dtype = [('eid', int), ('StepPoint_Pre_x', float), ('StepPoint_Pre_y', float), ('StepPoint_Pre_z', float), ('StepPoint_Post_x', float), ('StepPoint_Post_y', float), ('StepPoint_Post_z', float), ('StepLength', float), ('T', float), ('TrackId', int), ('E_k', float), ('dE', float), ('Px', float), ('Py', float), ('Pz', float), ('ProcessType', int), ('ProcessSubType', int)]
-track_dtype = []
-step_keys = ['StepPoint_Pre_x', 'StepPoint_Pre_y', 'StepPoint_Pre_z', 'StepPoint_Post_x', 'StepPoint_Post_y', 'StepPoint_Post_z', 'StepLength', 'T', 'TrackId', 'E_k', 'dE', 'Px', 'Py', 'Pz', 'ProcessType', 'ProcessSubType']
-track_keys = ['ParentTrackId', 'TrackId', 'PdgId', 'ProcessType', 'ProcessSubType']
+step_dtype = [('EventID', int), ('PdgId', int), ('StepPoint_Pre_x', float), ('StepPoint_Pre_y', float), ('StepPoint_Pre_z', float), ('StepPoint_Post_x', float), ('StepPoint_Post_y', float), ('StepPoint_Post_z', float), ('StepLength', float), ('T', float), ('TrackId', int), ('E_k', float), ('dE', float), ('Px', float), ('Py', float), ('Pz', float), ('ProcessType', int), ('ProcessSubType', int)]
+track_dtype = [('EventID', int), ('ParentTrackId', int), ('TrackId', int), ('PdgId', int), ('ProcessType', int), ('ProcessSubType', int), ('StartPoint_x', float), ('StartPoint_y', float), ('StartPoint_z', float), ('Px', float), ('Py', float), ('Pz', float), ('E_k', float)]
+truth_dtype = [('EventID', int), ('VertexId', int), ('x', float), ('y', float), ('z', float)]
+step_keys = ['StepPoint_Pre_x', 'StepPoint_Pre_y', 'StepPoint_Pre_z', 'StepPoint_Post_x', 'StepPoint_Post_y', 'StepPoint_Post_z', 'StepLength', 'T', 'TrackId', 'E_k', 'dE', 'Px', 'Py', 'Pz', 'ProcessType', 'ProcessSubType', 'PdgId']
+track_keys = ['ParentTrackId', 'TrackId', 'PdgId', 'ProcessType', 'ProcessSubType', 'StartPoint_x', 'StartPoint_y', 'StartPoint_z', 'Px', 'Py', 'Pz', 'E_k']
+truth_keys = ['EventID', 'VertexId', 'x', 'y', 'z']
+Entries = simstep.num_entries
 simstep_arr = simstep.arrays(step_keys, library='np')
 step_len_arr = [len(arr) for arr in simstep_arr['TrackId']]
 step_N = np.sum(step_len_arr)
-simtrack_arr = simtrack.arrays(library='np')
+
+simtrack_arr = simtrack.arrays(track_keys, library='np')
+track_len_arr = [len(arr) for arr in simtrack_arr['TrackId']]
+track_N = np.sum(track_len_arr)
+
+simtruth_arr = simtruth.arrays(library='np')
 print('finish read the root')
 # reformat the data structure
 simstep_ = np.zeros((step_N,), dtype=step_dtype)
-simstep_['eid'] = np.repeat(np.arange(len(simstep_arr['TrackId'])), step_len_arr)
+simstep_['EventID'] = np.repeat(np.arange(Entries), step_len_arr)
 for key in step_keys:
     simstep_[key] = np.concatenate(simstep_arr[key])
-# for i in len(simstep_arr):
-#    simstep
+
+simtrack_ = np.zeros((track_N,), dtype=track_dtype)
+simtrack_['EventID'] = np.repeat(np.arange(Entries), track_len_arr)
+for key in track_keys:
+    simtrack_[key] = np.concatenate(simtrack_arr[key])
+
+simtruth_ = np.zeros((Entries,), dtype=truth_dtype)
+for key in truth_keys:
+    simtruth_[key] = simtruth_arr[key]
 with h5py.File(args.opt, 'w') as opt:
-    opt.create_dataset('step', data=simstep_, compression='gzip')
+    opt.create_dataset('SimStep', data=simstep_, compression='gzip')
+    opt.create_dataset('SimTrack', data=simtrack_, compression='gzip')
+    opt.create_dataset('SimTruth', data=simtruth_, compression='gzip')
