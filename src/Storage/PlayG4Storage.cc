@@ -42,6 +42,7 @@ void PlayG4Storage::CreateFile(G4String name)
     truthTree = new TTree("SimTruth", "MonteCarloTruth");
     trackTree = new TTree("SimTrack", "MonteCarloTrack");
     stepTree = new TTree("SimStep", "MonteCarloStep");
+    trackStepTree = new TTree("SimTrackStep", "StepTrackRelation");
 	
     CreateBranchesForTruthRoot();
 	// CreateBranchesForSensorRoot();
@@ -72,12 +73,14 @@ void PlayG4Storage::CreateBranchesForTruthRoot(){
     trackTree->Branch("StartPoint_x", &SimTrack.StartPoint_x);
     trackTree->Branch("StartPoint_y", &SimTrack.StartPoint_y);
     trackTree->Branch("StartPoint_z", &SimTrack.StartPoint_z);
+    trackTree->Branch("T", &SimTrack.T);
     trackTree->Branch("Px", &SimTrack.Px);
     trackTree->Branch("Py", &SimTrack.Py);
     trackTree->Branch("Pz", &SimTrack.Pz);
     trackTree->Branch("E_k", &SimTrack.E_k);
     // steps tree
     stepTree->Branch("TrackId", &SimStep.TrackId);
+    stepTree->Branch("StepId", &SimStep.StepId);
     stepTree->Branch("PdgId", &SimStep.PdgId);
     stepTree->Branch("ProcessType", &SimStep.nProcessType);
     stepTree->Branch("ProcessSubType", &SimStep.nProcessSubType);
@@ -94,12 +97,21 @@ void PlayG4Storage::CreateBranchesForTruthRoot(){
     stepTree->Branch("Pz", &SimStep.Pz);
     stepTree->Branch("E_k", &SimStep.E_k);
     stepTree->Branch("T", &SimStep.T);
+    // step->track relation
+    trackStepTree->Branch("TrackId", &SimTrackStep.TrackId);
+    trackStepTree->Branch("StepId", &SimTrackStep.StepId);
+    trackStepTree->Branch("StartPoint_x", &SimTrackStep.StartPoint_x);
+    trackStepTree->Branch("StartPoint_y", &SimTrackStep.StartPoint_y);
+    trackStepTree->Branch("StartPoint_z", &SimTrackStep.StartPoint_z);
+    trackStepTree->Branch("T", &SimTrackStep.T);
+    trackStepTree->Branch("PdgId", &SimTrackStep.PdgId);
+    // trackStepTree->Branch("ChildTrackId", &SimTrackStep.ChildTrackId);
 }
 void PlayG4Storage::CreateBranchesForSensorRoot(){
 
 }
 void PlayG4Storage::FillMCTruth(const PlayG4SimTruthTree_t &truth)
-{
+{    // invoked after the truth data ready
     SimTruth = truth;
     truthTree->Fill();
 }
@@ -114,13 +126,18 @@ void PlayG4Storage::FillMCStep(const PlayG4SimStep_t &steps)
     SimStep = steps;
     stepTree->Fill();
 }
-
+void PlayG4Storage::FillMCTrackStep(const PlayG4SimTrackStep_t &trackSteps)
+{
+    SimTrackStep = trackSteps;
+    trackStepTree->Fill();
+}
 void PlayG4Storage::WriteData()
 {
     fPlayG4File->cd();
     truthTree->Write("", TObject::kOverwrite);
     trackTree->Write("", TObject::kOverwrite);
     stepTree->Write("", TObject::kOverwrite);
+    trackStepTree->Write("", TObject::kOverwrite);
     // int entries = truthTree->GetEntries();
     // std::cout<<"Entries:"<<entries<<" file:"<<truthTree->GetCurrentFile()<<std::endl;
 

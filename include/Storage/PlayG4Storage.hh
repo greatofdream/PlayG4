@@ -25,15 +25,17 @@ public:
     void FillMCTruth(const PlayG4SimTruthTree_t &truth);
     void FillMCTrack(const PlayG4SimTrack_t &track);
     void FillMCStep(const PlayG4SimStep_t &steps);
+    void FillMCTrackStep(const PlayG4SimTrackStep_t &trackSteps);
 	void WriteData();
     G4String fileName;
 
 private:
     TFile* fPlayG4File;
-    TTree* truthTree, *trackTree, *stepTree;
+    TTree* truthTree, *trackTree, *stepTree, *trackStepTree;
     static PlayG4Storage* instance;
     PlayG4SimTruthTree_t SimTruth;
     PlayG4SimTrack_t SimTrack;
     PlayG4SimStep_t SimStep;
+    PlayG4SimTrackStep_t SimTrackStep;
 };
 #endif

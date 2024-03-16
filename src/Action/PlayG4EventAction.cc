@@ -106,6 +106,7 @@ void PlayG4EventAction::EndOfEventAction(const G4Event* event)
 	PlayG4UserEventInformation* eventInformation = (PlayG4UserEventInformation*)event->GetUserInformation();
 	PlayG4Storage::GetInstance()->FillMCTrack(eventInformation->SimTrack);
 	PlayG4Storage::GetInstance()->FillMCStep(eventInformation->SimStep);
+	PlayG4Storage::GetInstance()->FillMCTrackStep(eventInformation->SimTrackStep);
 	// auto Parameters = PlayG4Parameters::GetME();
 
 	// if(RootFile->GetSecondaryTreeFlag()){

@@ -25,6 +25,7 @@ void PlayG4UserEventInformation::StoreStep(const G4Step* step)
   auto PostPos = PostPoint->GetPosition();
   auto P = PrePoint->GetMomentum();
   SimStep.TrackId.emplace_back(track->GetTrackID());
+  SimStep.StepId.emplace_back(track->GetCurrentStepNumber());
   SimStep.PdgId.emplace_back(track->GetDefinition()->GetPDGEncoding());
   SimStep.nProcessType.emplace_back(theProcess->GetProcessType());
   SimStep.nProcessSubType.emplace_back(theProcess->GetProcessSubType());
@@ -41,6 +42,18 @@ void PlayG4UserEventInformation::StoreStep(const G4Step* step)
   SimStep.Pz.emplace_back(P.z());
   SimStep.E_k.emplace_back(PrePoint->GetKineticEnergy());
   SimStep.T.emplace_back(PrePoint->GetGlobalTime());
+  const std::vector<const G4Track*>* secondary = step->GetSecondaryInCurrentStep();
+  for(size_t lp=0; lp<(secondary->size()); lp++){
+      SimTrackStep.TrackId.emplace_back(track->GetTrackID());
+      SimTrackStep.StepId.emplace_back(track->GetCurrentStepNumber());
+      // SimTrackStep.ChildTrackId.emplace_back((*secondary)[lp]->GetTrackID());
+      auto startPos = (*secondary)[lp]->GetPosition(); // The vertex position is not set until it is handled by step manager, G4SteppingManager::SetInitialStep
+      SimTrackStep.StartPoint_x.emplace_back(startPos.x());
+      SimTrackStep.StartPoint_y.emplace_back(startPos.y());
+      SimTrackStep.StartPoint_z.emplace_back(startPos.z());
+      SimTrackStep.T.emplace_back((*secondary)[lp]->GetGlobalTime()); //Time since the event is created 
+      SimTrackStep.PdgId.emplace_back((*secondary)[lp]->GetDefinition()->GetPDGEncoding());
+  }
 }
 
 void PlayG4UserEventInformation::StoreTrack(const G4Track* aTrack)
@@ -48,7 +61,6 @@ void PlayG4UserEventInformation::StoreTrack(const G4Track* aTrack)
     auto P = aTrack->GetVertexMomentumDirection();
     auto startPos = aTrack->GetVertexPosition();
       SimTrack.TrackId.emplace_back(aTrack->GetTrackID());
-      SimTrack.StepId.emplace_back(aTrack->GetCurrentStepNumber());
       SimTrack.ParentTrackId.emplace_back(aTrack->GetParentID());
       SimTrack.PdgId.emplace_back(aTrack->GetDefinition()->GetPDGEncoding());
   SimTrack.Px.emplace_back(P.x());
@@ -58,6 +70,7 @@ void PlayG4UserEventInformation::StoreTrack(const G4Track* aTrack)
   SimTrack.StartPoint_x.emplace_back(startPos.x());
   SimTrack.StartPoint_y.emplace_back(startPos.y());
   SimTrack.StartPoint_z.emplace_back(startPos.z());
+  SimTrack.T.emplace_back(aTrack->GetGlobalTime()); //Time since the event is created 
       // SimTrack.TrackLength.emplace_back(aTrack->GetTrackLength());
       auto theProcess = aTrack->GetCreatorProcess();
 	if(theProcess){

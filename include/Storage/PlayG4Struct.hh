@@ -45,13 +45,27 @@ struct PlayG4SimTrack_t
     std::vector<Double_t> E_k;
     std::vector<Int_t> nProcessType;
     std::vector<Int_t> nProcessSubType;
+    std::vector<Double_t> T;
 	// std::vector<PlayG4SimStepPoint_t> StepPoints;
 	// PlayG4SimTrack_t() {}
+};
+struct PlayG4SimTrackStep_t{
+    std::vector<Int_t> TrackId;
+    std::vector<Int_t> StepId;
+    // Due to the secondary track is not allocated the trackID when created at the post step
+    // std::vector<Int_t> ChildTrackId;
+    // Use the position and time to represent the unique ChildTrackId
+    std::vector<Double_t> StartPoint_x;
+    std::vector<Double_t> StartPoint_y;
+    std::vector<Double_t> StartPoint_z;
+    std::vector<Double_t> T;
+    std::vector<Int_t> PdgId;
 };
 struct PlayG4SimStep_t
 {
     std::vector<Int_t>  TrackId;
     std::vector<Int_t> PdgId;
+    std::vector<Int_t> StepId;
     std::vector<Double_t> StepPoint_Pre_x;
     std::vector<Double_t> StepPoint_Pre_y;
     std::vector<Double_t> StepPoint_Pre_z;
