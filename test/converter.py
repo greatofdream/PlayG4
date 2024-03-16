@@ -57,7 +57,7 @@ simtrack_['EventID'] = np.repeat(np.arange(Entries), track_len_arr)
 for key in track_keys:
     simtrack_[key] = np.concatenate(simtrack_arr[key])
 select_photon = (simtrack_['TrackId']!=1) & (simtrack_['PdgId']==0)
-simtrack_[select_photon]['ParentStepId'] = simtrackstep_df.set_index(['EventID', 'T']).loc[simtrack_[select_photon][['EventID', 'T']].tolist()]['StepId']
+simtrack_['ParentStepId'][select_photon] = simtrackstep_df.set_index(['EventID', 'T']).loc[simtrack_[select_photon][['EventID', 'T']].tolist()]['StepId']
 #.set_index('ChildTrackId').loc[simtrack_['TrackId']]['StepId']
 
 simtruth_ = np.zeros((Entries,), dtype=truth_dtype)
