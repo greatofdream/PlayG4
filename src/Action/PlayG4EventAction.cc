@@ -36,7 +36,7 @@
 #include "G4Trajectory.hh"
 #include "G4ios.hh"
 // analysis
-#include "g4root.hh"
+#include "G4AnalysisManager.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PlayG4EventAction::PlayG4EventAction()

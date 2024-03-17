@@ -46,6 +46,7 @@ struct PlayG4SimTrack_t
     std::vector<Int_t> nProcessType;
     std::vector<Int_t> nProcessSubType;
     std::vector<Double_t> T;
+    std::vector<Double_t> Velocity; // mainly for optical photon, whose group velocity is affected by refractive index
 	// std::vector<PlayG4SimStepPoint_t> StepPoints;
 	// PlayG4SimTrack_t() {}
 };

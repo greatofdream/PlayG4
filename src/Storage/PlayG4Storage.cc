@@ -74,6 +74,7 @@ void PlayG4Storage::CreateBranchesForTruthRoot(){
     trackTree->Branch("StartPoint_y", &SimTrack.StartPoint_y);
     trackTree->Branch("StartPoint_z", &SimTrack.StartPoint_z);
     trackTree->Branch("T", &SimTrack.T);
+    trackTree->Branch("Velocity", &SimTrack.Velocity);
     trackTree->Branch("Px", &SimTrack.Px);
     trackTree->Branch("Py", &SimTrack.Py);
     trackTree->Branch("Pz", &SimTrack.Pz);

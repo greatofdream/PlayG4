@@ -32,7 +32,7 @@
 #include "G4Run.hh"
 #include "G4RunManager.hh"
 // analysis
-#include "g4root.hh"
+#include "G4AnalysisManager.hh"
 #include "PlayG4Storage.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

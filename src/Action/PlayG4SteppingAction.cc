@@ -8,7 +8,7 @@
 #include "G4RunManager.hh"
 #include "G4LogicalVolume.hh"
 // analysis
-#include "g4root.hh"
+#include "G4AnalysisManager.hh"
 #include "G4AntiNeutrinoE.hh"
 #include "G4NeutrinoMu.hh"
 #include "G4Electron.hh"

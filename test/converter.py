@@ -4,6 +4,7 @@ convert the PlayG4 output root file to hdf5 using uproot
 import argparse
 
 import uproot, h5py, numpy as np, pandas as pd
+optical_photon_pdgid = -22
 
 psr = argparse.ArgumentParser()
 psr.add_argument('-i', dest='ipt', help='MC root file')
@@ -16,10 +17,10 @@ simstep = uproot.open(args.ipt+":SimStep")
 simtrackstep = uproot.open(args.ipt+":SimTrackStep")
 # electron step array: The result array is hierarchical structure, have to use awkward array to do selection
 step_dtype = [('EventID', int), ('PdgId', int), ('StepPoint_Pre_x', float), ('StepPoint_Pre_y', float), ('StepPoint_Pre_z', float), ('StepPoint_Post_x', float), ('StepPoint_Post_y', float), ('StepPoint_Post_z', float), ('StepLength', float), ('T', float), ('TrackId', int), ('E_k', float), ('dE', float), ('Px', float), ('Py', float), ('Pz', float), ('ProcessType', int), ('ProcessSubType', int)]
-track_dtype = [('EventID', int), ('ParentTrackId', int), ('ParentStepId', int), ('TrackId', int), ('PdgId', int), ('ProcessType', int), ('ProcessSubType', int), ('StartPoint_x', float), ('StartPoint_y', float), ('StartPoint_z', float), ('T', float), ('Px', float), ('Py', float), ('Pz', float), ('E_k', float)]
+track_dtype = [('EventID', int), ('ParentTrackId', int), ('ParentStepId', int), ('TrackId', int), ('PdgId', int), ('ProcessType', int), ('ProcessSubType', int), ('StartPoint_x', float), ('StartPoint_y', float), ('StartPoint_z', float), ('T', float), ('Px', float), ('Py', float), ('Pz', float), ('Velocity', float), ('E_k', float)]
 truth_dtype = [('EventID', int), ('VertexId', int), ('x', float), ('y', float), ('z', float)]
 step_keys = ['StepPoint_Pre_x', 'StepPoint_Pre_y', 'StepPoint_Pre_z', 'StepPoint_Post_x', 'StepPoint_Post_y', 'StepPoint_Post_z', 'StepLength', 'T', 'TrackId', 'E_k', 'dE', 'Px', 'Py', 'Pz', 'ProcessType', 'ProcessSubType', 'PdgId']
-track_keys = ['ParentTrackId', 'TrackId', 'PdgId', 'ProcessType', 'ProcessSubType', 'StartPoint_x', 'StartPoint_y', 'StartPoint_z', 'T', 'Px', 'Py', 'Pz', 'E_k']
+track_keys = ['ParentTrackId', 'TrackId', 'PdgId', 'ProcessType', 'ProcessSubType', 'StartPoint_x', 'StartPoint_y', 'StartPoint_z', 'T', 'Px', 'Py', 'Pz', 'Velocity', 'E_k']
 truth_keys = ['EventID', 'VertexId', 'x', 'y', 'z']
 Entries = simstep.num_entries
 simstep_arr = simstep.arrays(step_keys, library='np')
@@ -56,7 +57,7 @@ simtrack_ = np.zeros((track_N,), dtype=track_dtype)
 simtrack_['EventID'] = np.repeat(np.arange(Entries), track_len_arr)
 for key in track_keys:
     simtrack_[key] = np.concatenate(simtrack_arr[key])
-select_photon = (simtrack_['TrackId']!=1) & (simtrack_['PdgId']==0)
+select_photon = (simtrack_['TrackId']!=1) & (simtrack_['PdgId']==optical_photon_pdgid)
 simtrack_['ParentStepId'][select_photon] = simtrackstep_df.set_index(['EventID', 'T']).loc[simtrack_[select_photon][['EventID', 'T']].tolist()]['StepId']
 #.set_index('ChildTrackId').loc[simtrack_['TrackId']]['StepId']
 

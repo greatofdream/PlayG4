@@ -71,6 +71,7 @@ void PlayG4UserEventInformation::StoreTrack(const G4Track* aTrack)
   SimTrack.StartPoint_y.emplace_back(startPos.y());
   SimTrack.StartPoint_z.emplace_back(startPos.z());
   SimTrack.T.emplace_back(aTrack->GetGlobalTime()); //Time since the event is created 
+  SimTrack.Velocity.emplace_back(aTrack->GetVelocity());
       // SimTrack.TrackLength.emplace_back(aTrack->GetTrackLength());
       auto theProcess = aTrack->GetCreatorProcess();
 	if(theProcess){
